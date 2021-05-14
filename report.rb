@@ -45,4 +45,5 @@ module WeeklyReport
   end
 end
 
-puts JSON.pretty_generate(WeeklyReport::Json.call)
+puts JSON.pretty_generate(WeeklyReport::Json.call(response: WeeklyReport::Json.response(uri: WeeklyReport::Json.uri(start_date: '2021-05-10', end_date: '2021-05-16'))))
+#puts WeeklyReport::Csv.call.inspect
