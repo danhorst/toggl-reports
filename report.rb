@@ -13,10 +13,14 @@ module WeeklyReport
     module_function
 
     def uri(
+      end_date: nil,
+      start_date: nil,
       user_agent: 'Weekly-Decimal-Time',
       workspace_id: ENV['TOGGL_WORKSPACE_ID']
     )
-      URI("https://api.track.toggl.com/reports/api/v2/weekly?user_agent=#{user_agent}&workspace_id=#{workspace_id}")
+      report_url = "https://api.track.toggl.com/reports/api/v2/weekly?user_agent=#{user_agent}&workspace_id=#{workspace_id}"
+      report_url += "&since=#{start_date}&until=#{end_date}" if start_date && end_date
+      URI(report_url)
     end
 
     def response(
