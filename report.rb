@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'byebug'
 require 'csv'
 require 'uri'
 require 'net/http'
@@ -9,7 +8,23 @@ require 'json'
 require 'dotenv'
 Dotenv.load
 
+# Returns decimal hours from milliseconds at one hundredth of an hour precision
+module DecimalHours
+  module_function
+
+  def call(input)
+    return convert(input) unless input.respond_to?(:collect)
+    input.collect {|value| convert(value)}
+  end
+
+  def convert(milliseconds)
+    time = milliseconds.to_i / 10 / 60 / 60
+    time.to_f / 100
+  end
+end
+
 module WeeklyReport
+  # Converts JSON data from the Toggl Reports API into an abbreviated output
   module Csv
     HEADERS = [
       'Project',
@@ -29,9 +44,9 @@ module WeeklyReport
       CSV.generate do |csv|
         csv << headers
         json['data'].collect do |entry|
-          csv << [entry['title']['project']] + entry['totals']
+          csv << [entry['title']['project']] + DecimalHours.call(entry['totals'])
         end
-        csv << ['TOTAL'] + json['week_totals']
+        csv << ['TOTAL'] + DecimalHours.call(json['week_totals'])
       end
     end
   end
