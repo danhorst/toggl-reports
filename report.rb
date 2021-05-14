@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'byebug'
+require 'csv'
 require 'uri'
 require 'net/http'
 require 'json'
@@ -8,6 +10,32 @@ require 'dotenv'
 Dotenv.load
 
 module WeeklyReport
+  module Csv
+    HEADERS = [
+      'Project',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+      'TOTAL'
+    ]
+
+    module_function
+
+    def call(headers: HEADERS, json: JSON.parse(File.read('weekly.json')))
+      CSV.generate do |csv|
+        csv << headers
+        json['data'].collect do |entry|
+          csv << [entry['title']['project']] + entry['totals']
+        end
+        csv << ['TOTAL'] + json['week_totals']
+      end
+    end
+  end
+
   # Returns the weekly report data from the Toggl reports API
   module Json
     module_function
@@ -45,5 +73,5 @@ module WeeklyReport
   end
 end
 
-puts JSON.pretty_generate(WeeklyReport::Json.call(response: WeeklyReport::Json.response(uri: WeeklyReport::Json.uri(start_date: '2021-05-10', end_date: '2021-05-16'))))
-#puts WeeklyReport::Csv.call.inspect
+#puts JSON.pretty_generate(WeeklyReport::Json.call(response: WeeklyReport::Json.response(uri: WeeklyReport::Json.uri(start_date: '2021-05-10', end_date: '2021-05-16'))))
+puts WeeklyReport::Csv.call
