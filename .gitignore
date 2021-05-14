@@ -1,2 +1,4 @@
 .env*
 *.swp
+.byebug_history
+weekly.json
