@@ -14,7 +14,8 @@ module DecimalHours
 
   def call(input)
     return convert(input) unless input.respond_to?(:collect)
-    input.collect {|value| convert(value)}
+
+    input.collect { |value| convert(value) }
   end
 
   def convert(milliseconds)
@@ -24,6 +25,21 @@ module DecimalHours
 end
 
 module WeeklyReport
+  # Return dates from common reporting periods
+  module Dates
+    module_function
+
+    def this_week(date: Date.today)
+      return (date - 6).iso861 if date.sunday?
+
+      (date - (date.wday - 1)).iso8601
+    end
+
+    def last_week(date: Date.today)
+      this_week(date: (date - 7))
+    end
+  end
+
   # Converts JSON data from the Toggl Reports API into an abbreviated output
   module Csv
     HEADERS = [
@@ -36,7 +52,7 @@ module WeeklyReport
       'Saturday',
       'Sunday',
       'TOTAL'
-    ]
+    ].freeze
 
     module_function
 
@@ -88,4 +104,4 @@ module WeeklyReport
 end
 
 #puts JSON.pretty_generate(WeeklyReport::Json.call(response: WeeklyReport::Json.response(uri: WeeklyReport::Json.uri(start_date: '2021-05-10'))))
-puts WeeklyReport::Csv.call
+#puts WeeklyReport::Csv.call
