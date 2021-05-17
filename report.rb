@@ -56,7 +56,7 @@ module WeeklyReport
 
     module_function
 
-    def call(headers: HEADERS, json: )
+    def call(json:, headers: HEADERS)
       CSV.generate do |csv|
         csv << headers
         json['data'].collect do |entry|
@@ -104,12 +104,12 @@ module WeeklyReport
 end
 
 last_weeks_report_json = WeeklyReport::Json.call(
-    response: WeeklyReport::Json.response(
-      uri: WeeklyReport::Json.uri(
-        start_date: WeeklyReport::Dates.last_week
-      )
+  response: WeeklyReport::Json.response(
+    uri: WeeklyReport::Json.uri(
+      start_date: WeeklyReport::Dates.last_week
     )
   )
+)
 
 # puts JSON.pretty_generate(last_weeks_report_json)
 puts WeeklyReport::Csv.call(json: last_weeks_report_json)
