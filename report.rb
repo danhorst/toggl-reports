@@ -56,7 +56,7 @@ module WeeklyReport
 
     module_function
 
-    def call(headers: HEADERS, json: JSON.parse(File.read('weekly.json')))
+    def call(headers: HEADERS, json: )
       CSV.generate do |csv|
         csv << headers
         json['data'].collect do |entry|
