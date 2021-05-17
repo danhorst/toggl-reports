@@ -103,5 +103,13 @@ module WeeklyReport
   end
 end
 
-#puts JSON.pretty_generate(WeeklyReport::Json.call(response: WeeklyReport::Json.response(uri: WeeklyReport::Json.uri(start_date: '2021-05-10'))))
-#puts WeeklyReport::Csv.call
+last_weeks_report_json = WeeklyReport::Json.call(
+    response: WeeklyReport::Json.response(
+      uri: WeeklyReport::Json.uri(
+        start_date: WeeklyReport::Dates.last_week
+      )
+    )
+  )
+
+# puts JSON.pretty_generate(last_weeks_report_json)
+puts WeeklyReport::Csv.call(json: last_weeks_report_json)
