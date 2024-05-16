@@ -1,3 +1,7 @@
+> [!WARNING]
+> This repo is unmaintained.
+> I no longer use Toggl or have to fill out timesheets in decimal time.
+
 # Toggl Reports
 
 I track my working time in [Toggl][1].
